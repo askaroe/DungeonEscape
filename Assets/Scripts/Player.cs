@@ -8,15 +8,23 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _jumpForce = 5.0f;
     [SerializeField]
+    private float _speed = 3.0f;
+    [SerializeField]
     private LayerMask _groundLayer;
     [SerializeField]
     private float _rayDistance = 0.6f;
     private bool _resetJump = false;
 
+    private PlayerAnimation _playerAnimation;
+
+    private SpriteRenderer _spriteRenderer;
+
     // Start is called before the first frame update
     void Start()
     {
         _rigid = GetComponent<Rigidbody2D>();
+        _playerAnimation = GetComponent<PlayerAnimation>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -29,13 +37,24 @@ public class Player : MonoBehaviour
     {
         float move = Input.GetAxisRaw("Horizontal");
 
-        _rigid.velocity = new Vector2(move, _rigid.velocity.y);
+        if(move > 0)
+        {
+            Flip(true);
+        }
+        else if(move < 0)
+        {
+            Flip(false);
+        }
 
         if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             _rigid.velocity = new Vector2(_rigid.velocity.x, _jumpForce);
             StartCoroutine(ResetJumpRoutine());
         }
+
+        _rigid.velocity = new Vector2(move * _speed, _rigid.velocity.y);
+
+        _playerAnimation.Move(move);
     }
 
     bool IsGrounded()
@@ -50,6 +69,19 @@ public class Player : MonoBehaviour
         }
         return false;
     }
+
+    void Flip(bool faceRight)
+    {
+        if (faceRight)
+        {
+            _spriteRenderer.flipX = false;
+        }
+        else
+        {
+            _spriteRenderer.flipX = true;
+        }
+    }
+
 
     IEnumerator ResetJumpRoutine()
     {
