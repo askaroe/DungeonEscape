@@ -8,12 +8,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _jumpForce = 5.0f;
     [SerializeField]
-    private bool _grounded = false;
-    [SerializeField]
     private LayerMask _groundLayer;
     [SerializeField]
     private float _rayDistance = 0.6f;
-    
+    private bool _resetJump = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,26 +22,39 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Movement();
+    }
+
+    void Movement()
+    {
         float move = Input.GetAxisRaw("Horizontal");
 
-        if(Input.GetKeyDown(KeyCode.Space) && _grounded == true)
+        _rigid.velocity = new Vector2(move, _rigid.velocity.y);
+
+        if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
-            _grounded = false;
             _rigid.velocity = new Vector2(_rigid.velocity.x, _jumpForce);
-
+            StartCoroutine(ResetJumpRoutine());
         }
+    }
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayDistance, 1 << 6);
-
-        if (hit.collider != null)
+    bool IsGrounded()
+    {
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, _rayDistance, _groundLayer);
+        if(hitInfo.collider != null)
         {
-            _grounded = true;
+            if(!_resetJump)
+            {
+                return true;
+            }
         }
-        else
-        {
-            _grounded = false;
-        }
+        return false;
+    }
 
-        _rigid.velocity = new Vector2 (move, _rigid.velocity.y);
+    IEnumerator ResetJumpRoutine()
+    {
+        _resetJump = true;
+        yield return new WaitForSeconds(0.1f);
+        _resetJump = false;
     }
 }
