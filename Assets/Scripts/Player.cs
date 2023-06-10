@@ -12,8 +12,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private LayerMask _groundLayer;
     [SerializeField]
-    private float _rayDistance = 0.6f;
+    private float _rayDistance = 1.0f;
     private bool _resetJump = false;
+    private bool _grounded = false;
 
     private PlayerAnimation _playerAnimation;
 
@@ -37,7 +38,9 @@ public class Player : MonoBehaviour
     {
         float move = Input.GetAxisRaw("Horizontal");
 
-        if(move > 0)
+        _grounded = IsGrounded();
+
+        if (move > 0)
         {
             Flip(true);
         }
@@ -50,6 +53,7 @@ public class Player : MonoBehaviour
         {
             _rigid.velocity = new Vector2(_rigid.velocity.x, _jumpForce);
             StartCoroutine(ResetJumpRoutine());
+            _playerAnimation.Jump(true);
         }
 
         _rigid.velocity = new Vector2(move * _speed, _rigid.velocity.y);
@@ -60,10 +64,13 @@ public class Player : MonoBehaviour
     bool IsGrounded()
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, _rayDistance, _groundLayer);
+        Debug.DrawRay(transform.position, Vector2.down, Color.green);
         if(hitInfo.collider != null)
         {
+            Debug.Log("Grounded " + _resetJump);
             if(!_resetJump)
             {
+                _playerAnimation.Jump(false);
                 return true;
             }
         }
