@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     private PlayerAnimation _playerAnimation;
 
     private SpriteRenderer _spriteRenderer;
+    private SpriteRenderer _swordArcSprite;
 
     // Start is called before the first frame update
     void Start()
@@ -26,12 +27,17 @@ public class Player : MonoBehaviour
         _rigid = GetComponent<Rigidbody2D>();
         _playerAnimation = GetComponent<PlayerAnimation>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _swordArcSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
         Movement();
+        if (Input.GetMouseButtonDown(0) && IsGrounded())
+        {
+            _playerAnimation.Attack();
+        }
     }
 
     void Movement()
@@ -67,7 +73,6 @@ public class Player : MonoBehaviour
         Debug.DrawRay(transform.position, Vector2.down, Color.green);
         if(hitInfo.collider != null)
         {
-            Debug.Log("Grounded " + _resetJump);
             if(!_resetJump)
             {
                 _playerAnimation.Jump(false);
@@ -82,10 +87,22 @@ public class Player : MonoBehaviour
         if (faceRight)
         {
             _spriteRenderer.flipX = false;
+            _swordArcSprite.flipX = false;
+            _swordArcSprite.flipY = false;
+
+            Vector2 newPos = _swordArcSprite.transform.localPosition;
+            newPos.x = 1.01f;
+            _swordArcSprite.transform.localPosition = newPos;
         }
         else
         {
             _spriteRenderer.flipX = true;
+            _swordArcSprite.flipX = true;
+            _swordArcSprite.flipY = true;
+
+            Vector2 newPos = _swordArcSprite.transform.localPosition;
+            newPos.x = -1.01f;
+            _swordArcSprite.transform.localPosition = newPos;
         }
     }
 
