@@ -32,6 +32,7 @@ public class Player : MonoBehaviour, IDamageable
         _playerAnimation = GetComponent<PlayerAnimation>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _swordArcSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        Health = 4;
     }
 
     // Update is called once per frame
@@ -120,7 +121,20 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Damage()
     {
+        if (Health < 1)
+        {
+            return;
+        }
+
         Debug.Log("Player damaged");
+        Health--;
+        UIManager.Instance.UpdateLives(Health);
+
+        if(Health < 1)
+        {
+            _playerAnimation.Death();
+            return;
+        }
     }
 
     public void AddGems(int amount)

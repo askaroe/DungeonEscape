@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
     public Text playerGemCountText;
     public Image selectionImage;
     public Text gemCountText;
+    public Image[] healthBar;
 
     private void Awake()
     {
@@ -41,6 +42,17 @@ public class UIManager : MonoBehaviour
     public void UpdateGemCount(int gemCount)
     {
         gemCountText.text = "" + gemCount;
+    }
+
+    public void UpdateLives(int livesRemaining)
+    {
+        for(int i = 0; i <= livesRemaining; i++)
+        {
+            if(i == livesRemaining)
+            {
+                healthBar[i].enabled = false;
+            }
+        }
     }
 
 }
