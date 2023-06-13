@@ -122,4 +122,10 @@ public class Player : MonoBehaviour, IDamageable
     {
         Debug.Log("Player damaged");
     }
+
+    public void AddGems(int amount)
+    {
+        diamonds += amount;
+        UIManager.Instance.UpdateGemCount(diamonds);
+    }
 }
