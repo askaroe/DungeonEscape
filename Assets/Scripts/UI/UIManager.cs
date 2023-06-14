@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class UIManager : MonoBehaviour
     public Image selectionImage;
     public Text gemCountText;
     public Image[] healthBar;
+    public GameObject gameOverScreen;
+    public GameObject hud;
+    public GameObject winGameScreen;
 
     private void Awake()
     {
@@ -53,6 +57,27 @@ public class UIManager : MonoBehaviour
                 healthBar[i].enabled = false;
             }
         }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void GameOverSequence()
+    {
+        gameOverScreen.SetActive(true);
+        hud.SetActive(false);
+    }
+
+    public void WinGame()
+    {
+        winGameScreen.SetActive(true);
     }
 
 }
