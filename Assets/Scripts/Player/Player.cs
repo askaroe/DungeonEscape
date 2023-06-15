@@ -24,8 +24,7 @@ public class Player : MonoBehaviour, IDamageable
     private SpriteRenderer _spriteRenderer;
     private SpriteRenderer _swordArcSprite;
     [SerializeField]
-    private bool _isDead = false;
-    private BoxCollider2D _playerCollider;
+    private GameObject _joyStick;
 
     public int Health{ get; set; }
 
@@ -36,7 +35,6 @@ public class Player : MonoBehaviour, IDamageable
         _playerAnimation = GetComponent<PlayerAnimation>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _swordArcSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
-        _playerCollider = GetComponent<BoxCollider2D>();
         Health = 4;
     }
 
@@ -44,7 +42,7 @@ public class Player : MonoBehaviour, IDamageable
     void Update()
     {
         Movement();
-        if ((Input.GetMouseButtonDown(0) /* || CrossPlatformInputManager.GetButtonDown("A_Button") */) && IsGrounded())
+        if ((/* Input.GetMouseButtonDown(0)  || */ CrossPlatformInputManager.GetButtonDown("A_Button")) && IsGrounded())
         {
             _playerAnimation.Attack();
         }
@@ -56,7 +54,7 @@ public class Player : MonoBehaviour, IDamageable
 
     void Movement()
     {
-        float move = /* CrossPlatformInputManager.GetAxisRaw("Horizontal"); */ Input.GetAxisRaw("Horizontal");
+        float move = CrossPlatformInputManager.GetAxisRaw("Horizontal"); /*Input.GetAxisRaw("Horizontal");*/
 
         _grounded = IsGrounded();
 
@@ -165,6 +163,7 @@ public class Player : MonoBehaviour, IDamageable
     public void PlayerDeath()
     {
         _playerAnimation.Death();
+        Destroy(_joyStick);
         UIManager.Instance.GameOverSequence();
     } 
 }
